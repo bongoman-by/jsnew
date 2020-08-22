@@ -1,3 +1,6 @@
+    
+"use strict";
+
 const numberOfLesson = +prompt("Введите номер занятия:", 15);
 
 switch (numberOfLesson) {
