@@ -51,15 +51,8 @@ switch (numberOfLesson) {
          
     console.log('016 Функции, стрелочные ф-ции (ES6)');
   
-        function ask(question, yes, no) {
-            'use strict';
-            if (confirm(question)) {
-                yes();
-            }
-            else {no();
-            }
-        }
-
+    let ask = (question, yes, no) => (confirm(question)) ? yes() : no();
+    
         ask(
             "Вы согласны?",
             () => alert("Вы согласились."),
