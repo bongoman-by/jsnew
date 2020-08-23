@@ -104,7 +104,7 @@
            break;
        case 20:
 
-        console.log('Объекты: основы');
+           console.log('Объекты: основы');
 
            let user = {};
            user.name = 'John';
@@ -116,9 +116,9 @@
 
            alert(isEmpty(schedule)); // true
 
-            schedule["8:30"] = "get up";
+           schedule["8:30"] = "get up";
 
-            alert(isEmpty(schedule)); // false
+           alert(isEmpty(schedule)); // false
 
            function isEmpty(someObject) {
 
@@ -127,7 +127,7 @@
                    return true;
                }
 
-                            if (Object.keys(someObject).length == 0) {
+               if (Object.keys(someObject).length == 0) {
                    return true;
                }
 
@@ -137,30 +137,30 @@
            break;
        case 23:
 
-       let anyUser = {
-        name: "John",
-        surname: "Smith",
-      
-        set fullName(value) {
-          [this.name, this.surname] = value.split(" ");
-        },
-      
-        get fullName() {
-          return `${this.name} ${this.surname}`;
-        }
-      };
-      
+           let anyUser = {
+               name: "John",
+               surname: "Smith",
 
-      let admin = Object.create(anyUser);
-      admin.isAdmin = true;
-      
-      alert(admin.fullName); // John Smith (*)
-      
-      // срабатывает сеттер!
-      admin.fullName = "Alice Cooper"; // (**)
-      alert(admin.name); // Alice
-      alert(admin.surname); // Cooper
-       break;
+               set fullName(value) {
+                   [this.name, this.surname] = value.split(" ");
+               },
+
+               get fullName() {
+                   return `${this.name} ${this.surname}`;
+               }
+           };
+
+
+           let admin = Object.create(anyUser);
+           admin.isAdmin = true;
+
+           alert(admin.fullName); // John Smith (*)
+
+           // срабатывает сеттер!
+           admin.fullName = "Alice Cooper"; // (**)
+           alert(admin.name); // Alice
+           alert(admin.surname); // Cooper
+           break;
        default:
            console.log('Занятия с таким номером не найдено!');
    }
