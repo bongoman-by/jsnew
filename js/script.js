@@ -1,13 +1,22 @@
 'use strict';
 
- const box = document.getElementById('box');
+const box = document.getElementById('box'),
+      btns = document.body.querySelectorAll('button');
 
- console.log(box);
+box.style.backgroundColor = 'grey';
+box.style.width = '100px';
 
- const btns = document.getElementsByTagName('button');
+console.log(btns);
 
- console.log(btns);
+btns.forEach(element => {
+    element.style.borderRadius = '70%';
+    element.style.backgroundColor = 'green';
+});
 
- const hearts = document.querySelectorAll('.wrapper');
+const div = document.createElement('div');
 
- console.log(hearts);
+div.classList.add('black');
+
+btns[0].before(div);
+
+div.innerHTML = "<h1>Hello</h1>";
