@@ -1,97 +1,139 @@
 'use strict';
 
-document.addEventListener('DOMContentLoaded', () => {
+window.addEventListener('DOMContentLoaded', () => {
 
-    const movieDB = {
-        movies: [
-            "Логан",
-            "Лига справедливости",
-            "Ла-ла лэнд",
-            "Одержимость",
-            "Скотт Пилигрим против..."
-        ]
-    };
+    // tabs
 
-    const maxLength = 21,
-        film = 'Полет над гнездом кукушки',
-        advlist = document.querySelectorAll(".promo__adv img"),
-        genre = document.querySelector(".promo__genre"),
-        poster = document.querySelector(".promo__bg"),
-        movielist = document.querySelector(".promo__interactive-list"),
-        addForm = document.querySelector('form.add'),
-        addInput = addForm.querySelector('.adding__input'),
-        checkbox = addForm.querySelector('[type="checkbox"]');
+    const tabsParent = document.querySelector('.tabheader__items'),
+        tabs = tabsParent.querySelectorAll('.tabheader__item'),
+        tabsContent = document.querySelectorAll('.tabcontent');
 
-    function checkFilm(newFilm, maxLength) {
+    function hideTabContent() {
+        tabsContent.forEach(item => {
+            item.classList.add('hide');
+            item.classList.remove('show');
+            item.classList.remove('fade');
+        });
 
-        if (newFilm.length > maxLength) {
-            return `${newFilm.slice(0, maxLength)}...`;
-        }
+        tabs.forEach(item => {
 
-        return newFilm;
+            item.classList.remove('tabheader__item_active');
+        });
+    }
+
+    function showTabContent(i = 0) {
+
+        tabsContent[i].classList.add('show');
+        tabsContent[i].classList.add('fade');
+        tabsContent[i].classList.remove('hide');
+        tabs[i].classList.add('tabheader__item_active');
 
     }
 
-    function createMovieList(films, parent) {
+    hideTabContent();
+    showTabContent();
 
-        parent.innerHTML = "";
+    tabsParent.addEventListener('click', (event) => {
+        const target = event.target;
 
-        films.sort();
-
-        films.forEach((film, i) => {
-            parent.innerHTML += `<li class="promo__interactive-item">${i + 1}. ${film.toUpperCase()}
-            <div class="delete"></div>
-        </li>`;
-        });
-
-        document.querySelectorAll('.delete').forEach((btn, i) => {
-            btn.addEventListener('click', () => {
-                
-                btn.parentElement.remove();
-                films.splice(i, 1);
-                createMovieList(films, parent);
-
+        if (target && target.classList.contains('tabheader__item')) {
+            tabs.forEach((item, i) => {
+                if (target == item) {
+                    hideTabContent();
+                    showTabContent(i);
+                }
             });
-        });
-
-    }
-
-    const deleteAdv = (arr) => {
-
-        arr.forEach((item) => {
-            item.remove();
-        });
-
-    };
-
-    const makeChanges = () => {
-        
-        genre.textContent = 'DRAMA';
-          poster.style.backgroundImage = 'url("img/bg.jpg")';
-    };
-
-    addForm.addEventListener('submit', (event) => {
-        event.preventDefault();
-
-        let newFilm = addInput.value,
-            favorite = checkbox.checked;
-
-        if (newFilm) {
-
-            movieDB.movies.push(checkFilm(newFilm, maxLength));
-            createMovieList(movieDB.movies, movielist);
-            event.target.reset();
-
-            if (favorite) {
-                console.log('Добавляем новый фильм!');
-            }
-
         }
 
     });
 
-    createMovieList(movieDB.movies, movielist);
-    deleteAdv(advlist);
-    makeChanges();
+    //timer
+
+    const deadline = '2020-09-10';
+
+    function getTimeRemaining(endtime) {
+        const t = Date.parse(endtime) - Date.parse(new Date()),
+            days = Math.floor(t / (1000 * 60 * 60 * 24)),
+            hours = Math.floor((t / (1000 * 60 * 60)) % 24),
+            minutes = Math.floor((t / (1000 * 60)) % 60),
+            seconds = Math.floor((t / 1000) % 60);
+
+        return {
+            'total': t,
+            'days': days,
+            'hours': hours,
+            'minutes': minutes,
+            'seconds': seconds
+        };
+    }
+
+    function getZero(num) {
+        if (num < 10) {
+            return `0${num}`;
+        }
+        return `${num}`;
+    }
+
+    function setClock(selector, endtime) {
+
+        const timer = document.querySelector(selector),
+            timeInteval = setInterval(updateClock, 1000);
+
+        updateClock();
+
+        function updateClock() {
+            const t = getTimeRemaining(endtime);
+
+            for (let key in t) {
+                if (`#${key}` == "#total") {
+                    if (t.total <= 0) {
+                        clearInterval(timeInteval);
+                    }
+                } else {
+                    timer.querySelector(`#${key}`).innerHTML = getZero(t[key]);
+                }
+
+            }
+
+        }
+
+    }
+
+    setClock('.timer', deadline);
+
+    //modal
+
+    const modalTriggers = document.querySelectorAll('[data-modal]'),
+        modal = document.querySelector('.modal'),
+        modalCloseBtn = document.querySelector('[data-close]');
+
+
+    function actionModal(params) {
+        modal.classList.add(params[0]);
+        modal.classList.remove(params[1]);
+        document.body.style.overflow = [2];
+    }
+
+    modalTriggers.forEach((elem) => {
+        elem.addEventListener('click', () => {
+            actionModal(['show', 'hide', 'hidden']);
+        });
+    });
+
+    modalCloseBtn.addEventListener('click', () => {
+        actionModal(['hide', 'show', '']);
+    });
+
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            actionModal(['hide', 'show', '']);
+        }
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.code === 'Escape' && modal.classList.contains('show')) {
+            actionModal(['hide', 'show', '']);                    
+        }
+    });
 
 });
