@@ -157,7 +157,7 @@ window.addEventListener('DOMContentLoaded', () => {
             this.alt = params[1];
             this.subtitle = params[2];
             this.descr = params[3];
-            this.price = params[4];            
+            this.price = params[4];
             this.parent = params[5];
         }
 
@@ -196,4 +196,69 @@ window.addEventListener('DOMContentLoaded', () => {
         new Menu(elem).render();
     }
 
+    //server
+
+    const forms = document.querySelectorAll('form'),
+        message = {
+            loading: 'Загрузка',
+            success: 'Спасибо! Скоро мы с вами свяжемся',
+            failure: 'Что-то пошло не так..'
+        };
+    forms.forEach(item => {
+        postData(item);
+    });
+
+    function sendServer(request, form, format = 'json') {
+        if (format === 'json') {
+            request.setRequestHeader('Content-type', 'applacation/json');
+            const formData = new FormData(form);
+            const object = {};
+            formData.forEach(function (value, key) {
+                object[key] = value;
+            });
+            const json = JSON.stringify(object);
+            request.send(json);
+        } else {
+            //так делать не нужно
+            // request.setRequestHeader('Content-type', 'multipart/form-data');
+            const formData = new FormData(form);
+            request.send(formData);
+
+        }
+    }
+
+    function postData(form) {
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const statusMessage = document.createElement('div');
+            statusMessage.classList.add('status');
+            statusMessage.textContent = message.loading;
+            form.append(statusMessage);
+
+            const request = new XMLHttpRequest(),
+                method = 'POST',
+                url = 'server.php',
+                async = true,
+                    login = 'Sergey',
+                    pass = '1111';
+
+            request.open(method, url, async, login, pass);
+            sendServer(request, form);
+
+            request.addEventListener('load', () => {
+
+                if (request.status === 200) {
+                    console.log(request.response);
+                    statusMessage.textContent = message.success;
+                    form.reset();
+                    setTimeout(() => {
+                        statusMessage.remove();
+                    }, 2000);
+                } else {
+                    statusMessage.textContent = message.failure;
+                }
+            });
+        });
+    }
 });
