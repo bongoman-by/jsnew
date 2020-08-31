@@ -149,4 +149,51 @@ window.addEventListener('DOMContentLoaded', () => {
 
     window.addEventListener('scroll', showModalByScroll);
 
+    // меню 
+
+    class Menu {
+        constructor(params) {
+            this.img = params[0];
+            this.alt = params[1];
+            this.subtitle = params[2];
+            this.descr = params[3];
+            this.price = params[4];            
+            this.parent = params[5];
+        }
+
+        getMenu() {
+            return `<div class="menu__item">
+            <img src="img/tabs/${this.img}.jpg" alt="${this.alt}">
+            <h3 class="menu__item-subtitle">${this.subtitle}</h3>
+            <div class="menu__item-descr">${this.descr}</div>
+            <div class="menu__item-divider"></div>
+            <div class="menu__item-price">
+                <div class="menu__item-cost">Цена:</div>
+                <div class="menu__item-total"><span>${this.price}</span> грн/день</div>
+            </div>
+        </div>`;
+        }
+
+        render() {
+            const element = document.createElement('div');
+            element.innerHTML = this.getMenu();
+            this.parent.append(element);
+        }
+    }
+
+    const menu = document.querySelector('.menu .container');
+    menu.innerHTML = "";
+
+    const menuList = [
+        ['vegy', 'vegy', 'Меню "Фитнес"', 'Меню "Фитнес" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!', 229, menu],
+        ['elite', 'elite', 'Меню “Премиум”', 'В меню “Премиум” мы используем не только красивый дизайн упаковки, но и качественное исполнение блюд. Красная рыба, морепродукты, фрукты - ресторанное меню без похода в ресторан!', 550, menu],
+        ['post', 'post', 'Меню "Постное"', 'Меню “Постное” - это тщательный подбор ингредиентов: полное отсутствие продуктов животного происхождения, молоко из миндаля, овса, кокоса или гречки, правильное количество белков за счет тофу и импортных вегетарианских стейков!', 430, menu],
+    ];
+
+    for (let index = 0; index < menuList.length; index++) {
+        const elem = menuList[index];
+        // menu.innerHTML += new Menu(elem).getMenu();
+        new Menu(elem).render();
+    }
+
 });
