@@ -272,26 +272,26 @@ window.addEventListener('DOMContentLoaded', () => {
             const json = JSON.stringify(object);
 
             fetch('server.php', {
-                method: "POST",
-                body: json,
-                headers: {
-                    'Content-type': 'application/json'
-                }
-            })
-            .then(data => data.text())
-            .then(data => {
-                form.reset();
-                console.log(data.response);
-                statusMessage.remove();
-                form.reset();
-                showThanksModal(message.success);
-            }).catch(() => {
-                form.reset();
-                showThanksModal(message.failure);
+                    method: "POST",
+                    body: json,
+                    headers: {
+                        'Content-type': 'application/json'
+                    }
+                })
+                .then(data => data.text())
+                .then(data => {
+                    form.reset();
+                    console.log(data.response);
+                    statusMessage.remove();
+                    form.reset();
+                    showThanksModal(message.success);
+                }).catch(() => {
+                    form.reset();
+                    showThanksModal(message.failure);
 
-            }).finally(() => {
-                form.reset();
-            });
+                }).finally(() => {
+                    form.reset();
+                });
 
         });
     }
@@ -338,4 +338,9 @@ window.addEventListener('DOMContentLoaded', () => {
     // })
     //    .then(response => response.json())
     //    .then(json => console.log(json));
+
+    fetch('http://localhost:3000/menu')
+        .then(data => data.json())
+        .then(res => console.log(res));
+
 });
