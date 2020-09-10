@@ -49,7 +49,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     //timer
 
-    const deadline = '2020-09-10';
+    const deadline = '2020-09-15';
 
     function getTimeRemaining(endtime) {
         const t = Date.parse(endtime) - Date.parse(new Date()),
@@ -197,8 +197,8 @@ window.addEventListener('DOMContentLoaded', () => {
         bindPostData(item);
     });
 
-    const postData =  async (url, data) => {
-            const res =  await fetch(url, {
+    const postData = async (url, data) => {
+        const res = await fetch(url, {
             method: "POST",
             headers: {
                 'Content-type': 'application/json'
@@ -207,25 +207,25 @@ window.addEventListener('DOMContentLoaded', () => {
         });
 
         return await res.json();
-            
+
     };
-    
-    const getData =  async (url) => {
-        const res =  await fetch(url);
+
+    const getData = async (url) => {
+        const res = await fetch(url);
 
         if (!res.ok) {
-           throw new Error(`Could not fetch ${url}, status: ${res.status}`); 
+            throw new Error(`Could not fetch ${url}, status: ${res.status}`);
         }
 
         return await res.json();
     };
 
     getData('http://localhost:3000/menu')
-    .then(data => {
-        data.forEach(obj => {
-             new Menu(Object.values(obj)).render();
+        .then(data => {
+            data.forEach(obj => {
+                new Menu(Object.values(obj)).render();
+            });
         });
-    });
 
     function bindPostData(form) {
         form.addEventListener('submit', (e) => {
@@ -285,24 +285,90 @@ window.addEventListener('DOMContentLoaded', () => {
 
     }
 
-    //API
+    //slider
 
-    //     fetch('https://jsonplaceholder.typicode.com/todos/1')
-    //   .then(response => response.json()) 
-    //   .then(json => console.log(json));
+    const mySlider = true;
 
-    // fetch('https://jsonplaceholder.typicode.com/posts', {
-    //     method: "POST",
-    //     body: JSON.stringify({name: 'Sergey'}),
-    //     headers: {
-    //         'Content-type': 'application/json'
-    //     }
-    // })
-    //    .then(response => response.json())
-    //    .then(json => console.log(json));
+    const sliders = [
+        'food-12',
+        'olive-oil',
+        'paprika',
+        'pepper'
+    ];
 
-    // fetch('http://localhost:3000/menu')
-    //     .then(data => data.json())
-    //     .then(res => console.log(res));
+    const slider = document.querySelector('.offer__slider'),
+        sliderCounter = slider.querySelector('.offer__slider-counter'),
+        sliderPrev = sliderCounter.querySelector('.offer__slider-prev'),
+        sliderNext = sliderCounter.querySelector('.offer__slider-next'),
+        extention = 'jpg',
+        path = 'img/slider';
+    let current = 0;
+
+    class Slider {
+        constructor(sliders, key, extention, path) {
+            this.img = path + '/' + sliders[key] + '.' + extention;
+            this.length = sliders.length;
+            this.key = key;
+            this.alt = sliders[key];
+            this.current = (key < 10) ? '0' + (key + 1) : '' + key;
+            this.total = (this.length < 10) ? '0' + (this.length) : '' + this.length;
+        }
+
+
+        getCounter() {
+            return `
+             <span id="current">${this.current}</span>/<span id="total">${this.total}</span>`;
+        }
+
+        getWrapper() {
+            return `
+         <div class="offer__slider-wrapper">
+            <div class="offer__slide">
+                <img src="${this.img}" alt="${this.alt}">
+            </div>
+        </div>`;
+        }
+
+        render() {
+            slider.innerHTML = "";
+            sliderCounter.innerHTML = "";
+
+            if (this.key != 0) {
+                sliderCounter.append(sliderPrev);
+            }
+            let element1 = document.createElement('div');
+            element1.innerHTML = this.getCounter();
+            sliderCounter.append(element1);
+            if (this.key != this.length - 1) {
+                sliderCounter.append(sliderNext);
+            }
+
+            slider.append(sliderCounter);
+
+            let element2 = document.createElement('div');
+            element2.innerHTML = this.getWrapper();
+            slider.append(element2);
+        }
+    }
+
+
+    function actionSliderChange(i) {
+        current = current + i;
+        new Slider(sliders, current, extention, path, slider).render();
+    }
+
+    if (mySlider) {
+        
+        actionSliderChange(0);
+
+        sliderPrev.addEventListener('click', () => {
+            actionSliderChange(-1);
+        });
+        sliderNext.addEventListener('click', () => {
+            actionSliderChange(1);
+        });
+
+    }
+
 
 });
