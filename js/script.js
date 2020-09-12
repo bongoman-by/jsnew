@@ -243,7 +243,6 @@ window.addEventListener('DOMContentLoaded', () => {
 
             postData('http://localhost:3000/requests', JSON.stringify(json))
                 .then(data => {
-                    console.log(data);
                     form.reset();
                     statusMessage.remove();
                     form.reset();
@@ -322,6 +321,51 @@ window.addEventListener('DOMContentLoaded', () => {
         slide.style.width = width;
     });
 
+    slider.style.position = 'relative';
+
+    const indicators = document.createElement('ol'),
+          dots = [];
+    indicators.classList.add('carousel-indicators');
+    indicators.style.cssText = `
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 15;
+    display: flex;
+    justify-content: center;
+    margin-right: 15%;
+    margin-left: 15%;
+    list-style: none;
+    `;
+
+    slider.append(indicators);
+
+    for (let index = 0; index < slides.length; index++) {
+        const element = document.createElement('li');
+        element.setAttribute('data-slide-to', index + 1);
+        element.style.cssText = `
+        box-sizing: content-box;
+        flex: 0 1 auto;
+        width: 30px;
+        height: 6px;
+        margin-right: 3px;
+        margin-left: 3px;
+        cursor: pointer;
+        background-color: #fff;
+        background-clip: padding-box;
+        border-top: 10px solid transparent;
+        border-bottom: 10px solid transparent;
+        opacity: ${(index === 0)? '1' : '.5'};
+        transition: opacity .6 s ease;
+        `;
+
+        indicators.append(element);
+
+        dots.push(element);
+
+    }
+
     class Slider {
         constructor(slides, key, extention, path) {
             this.img = path + '/' + slides[key] + '.' + extention;
@@ -368,6 +412,14 @@ window.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    const setSliderStyle = () => {
+        slidesField.style.transform = `translateX(-${offset}px)`;
+        current.textContent = (slides.length < 10) ? `0${slideIndex}` : `${slideIndex}`;
+
+        dots.forEach(dot  => dot.style.opacity = '.5');
+        dots[slideIndex - 1].style.opacity = '1';
+    };
+
     function actionSliderChange(i) {
         slideIndex += slideIndex;
         new Slider(mySlides, slideIndex, extention, path, slider).render();
@@ -392,19 +444,15 @@ window.addEventListener('DOMContentLoaded', () => {
 
         next.addEventListener('click', () => {
 
-            console.log(offset);
-
             if (offset == +width.slice(0, width.length - 2) * (slides.length - 1)) {
                 offset = 0;
             } else {
                 offset += +width.slice(0, width.length - 2);
             }
 
-            slidesField.style.transform = `translateX(-${offset}px)`;
-
-            slideIndex = (slideIndex == slides.length) ? 1 : slideIndex + 1;
-            current.textContent = (slides.length < 10) ? `0${slideIndex}` : `${slideIndex}`;
-
+            slideIndex = (slideIndex === slides.length) ? 1 : slideIndex + 1;
+            setSliderStyle();
+            
         });
 
         prev.addEventListener('click', () => {
@@ -415,11 +463,20 @@ window.addEventListener('DOMContentLoaded', () => {
                 offset -= +width.slice(0, width.length - 2);
             }
 
-            slidesField.style.transform = `translateX(-${offset}px)`;
+            slideIndex = (slideIndex === 1) ? slides.length : slideIndex - 1;
+            setSliderStyle();
 
-            slideIndex = (slideIndex == 1) ? slides.length : slideIndex - 1;
-            current.textContent = (slides.length < 10) ? `0${slideIndex}` : `${slideIndex}`;
+        });
 
+        dots.forEach(dot => {
+            dot.addEventListener('click', (e) => {
+                const slideTo = +e.target.getAttribute('data-slide-to');
+
+                slideIndex = slideTo;
+                offset = +width.slice(0, width.length - 2) * (slideTo - 1);
+                setSliderStyle();
+
+            });
         });
 
     }
