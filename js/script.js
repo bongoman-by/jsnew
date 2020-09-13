@@ -304,8 +304,9 @@ window.addEventListener('DOMContentLoaded', () => {
         slidesWrapper = slider.querySelector('.offer__slider-wrapper'),
         slidesField = slider.querySelector('.offer__slider-inner'),
         slides = slider.querySelectorAll('.offer__slide'),
-        width = window.getComputedStyle(slidesWrapper).width,
-        extention = 'jpg',
+        // width = window.getComputedStyle(slidesWrapper).width,
+        width = `${slider.clientWidth}px`,
+        extension = 'jpg',
         path = 'img/slider';
 
     let slideIndex = 1;
@@ -317,7 +318,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     slidesWrapper.style.overflow = 'hidden';
 
-    slides.forEach(slide => {
+     slides.forEach(slide => {
         slide.style.width = width;
     });
 
@@ -367,8 +368,8 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
     class Slider {
-        constructor(slides, key, extention, path) {
-            this.img = path + '/' + slides[key] + '.' + extention;
+        constructor(slides, key, extension, path) {
+            this.img = path + '/' + slides[key] + '.' + extension;
             this.length = slides.length;
             this.key = key - 1;
             this.alt = slides[key - 1];
@@ -420,9 +421,11 @@ window.addEventListener('DOMContentLoaded', () => {
         dots[slideIndex - 1].style.opacity = '1';
     };
 
+    const changeWidthToNumber = () => +width.replace(/\D/g, '');
+
     function actionSliderChange(i) {
         slideIndex += slideIndex;
-        new Slider(mySlides, slideIndex, extention, path, slider).render();
+        new Slider(mySlides, slideIndex, extension, path, slider).render();
     }
 
     if (mySlider) {
@@ -438,17 +441,13 @@ window.addEventListener('DOMContentLoaded', () => {
 
     } else {
 
-
         total.textContent = (slides.length < 10) ? `0${slides.length}` : `${slides.length}`;
         current.textContent = (slides.length < 10) ? `0${slideIndex}` : `${slideIndex}`;
 
         next.addEventListener('click', () => {
 
-            if (offset == +width.slice(0, width.length - 2) * (slides.length - 1)) {
-                offset = 0;
-            } else {
-                offset += +width.slice(0, width.length - 2);
-            }
+            let widthToNumber = changeWidthToNumber();
+            offset =  (offset === widthToNumber * (slides.length - 1)) ? 0 : offset + widthToNumber;
 
             slideIndex = (slideIndex === slides.length) ? 1 : slideIndex + 1;
             setSliderStyle();
@@ -457,11 +456,8 @@ window.addEventListener('DOMContentLoaded', () => {
 
         prev.addEventListener('click', () => {
 
-            if (offset == 0) {
-                offset = +width.slice(0, width.length - 2) * (slides.length - 1);
-            } else {
-                offset -= +width.slice(0, width.length - 2);
-            }
+            let widthToNumber = changeWidthToNumber();
+            offset =  (offset === 0) ? widthToNumber * (slides.length - 1) : offset - widthToNumber;
 
             slideIndex = (slideIndex === 1) ? slides.length : slideIndex - 1;
             setSliderStyle();
@@ -473,7 +469,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 const slideTo = +e.target.getAttribute('data-slide-to');
 
                 slideIndex = slideTo;
-                offset = +width.slice(0, width.length - 2) * (slideTo - 1);
+                offset = changeWidthToNumber() * (slideTo - 1);
                 setSliderStyle();
 
             });
@@ -481,5 +477,4 @@ window.addEventListener('DOMContentLoaded', () => {
 
     }
 
-
-});
+ });
