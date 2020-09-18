@@ -16,5 +16,8 @@
     "url": "https://github.com/bongoman-by/jsnew/issues"
   },
   "homepage": "https://github.com/bongoman-by/jsnew#readme",
-  "devDependencies": {}
+  "devDependencies": {
+    "webpack": "^4.44.2",
+    "webpack-cli": "^3.3.12"
+  }
 }
